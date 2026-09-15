@@ -60,6 +60,7 @@ export default function UsuariosPage() {
       label: 'RUT',
       render: (item) => (
         <span className="font-mono text-xs">{formatRut(item.rut)}</span>
+        <span className="font-mono text-xs whitespace-nowrap">{formatRut(item.rut)}</span>
       ),
     },
     {

@@ -60,6 +60,7 @@ export default function ClientesPage() {
       label: 'RUT Empresa',
       render: (item) => (
         <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-muted">
+        <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-muted whitespace-nowrap">
           {formatRut(item.rutEmpresa)}
         </span>
       ),
