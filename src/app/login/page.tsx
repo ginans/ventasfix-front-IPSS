@@ -45,7 +45,7 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'admin@ventasfix.cl',
+      email: '',
       password: '',
     },
   });
@@ -110,14 +110,11 @@ export default function LoginPage() {
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-4">
+          <CardFooter>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Ingresar al Sistema
             </Button>
-            <p className="text-xs text-center text-muted-foreground">
-              Credencial de prueba: admin@ventasfix.cl / Admin1234!
-            </p>
           </CardFooter>
         </form>
       </Card>
