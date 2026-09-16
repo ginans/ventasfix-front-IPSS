@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import React, { useEffect } from 'react';
@@ -15,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { IProduct } from '@/interfaces/product.interface';
-import { Loader2, Calculator } from 'lucide-react';
+import { Loader2, Calculator, Package } from 'lucide-react';
 
 const productSchema = z.object({
   sku: z.string().min(1, 'El código SKU es obligatorio'),
@@ -73,6 +74,7 @@ export function ProductFormDialog({
   });
 
   const precioNetoValue = watch('precioNeto');
+  const imagenUrl = watch('imagen');
 
   // Cálculo dinámico automático de IVA 19%
   const handleNetoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,12 +185,29 @@ export function ProductFormDialog({
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="imagen">URL de la Imagen (solo una)</Label>
-            <Input
-              id="imagen"
-              placeholder="https://images.unsplash.com/..."
-              {...register('imagen')}
-            />
+            <Label htmlFor="imagen">URL de la Imagen</Label>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 shrink-0 rounded-md border bg-muted/60 overflow-hidden flex items-center justify-center">
+                {imagenUrl ? (
+                  <img
+                    src={imagenUrl}
+                    alt="Vista previa"
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <Package className="h-5 w-5 text-muted-foreground" />
+                )}
+              </div>
+              <Input
+                id="imagen"
+                placeholder="https://images.unsplash.com/..."
+                className="flex-1"
+                {...register('imagen')}
+              />
+            </div>
             {errors.imagen && (
               <p className="text-xs text-destructive">{errors.imagen.message}</p>
             )}

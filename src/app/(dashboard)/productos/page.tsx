@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -9,7 +10,7 @@ import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { ProductFormDialog } from '@/components/modules/products/product-form-dialog';
 import { AppBadge } from '@/components/shared/app-badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Package } from 'lucide-react';
 
 export default function ProductosPage() {
   const { canWrite } = usePermissions();
@@ -79,11 +80,29 @@ export default function ProductosPage() {
       key: 'nombre',
       label: 'Producto',
       render: (item) => (
-        <div>
-          <p className="font-medium text-sm leading-tight">{item.nombre}</p>
-          <p className="text-xs text-muted-foreground line-clamp-1">
-            {item.descripcionCorta}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 shrink-0 rounded-md border bg-muted/60 overflow-hidden flex items-center justify-center">
+            {item.imagen ? (
+              <img
+                src={item.imagen}
+                alt={item.nombre}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none';
+                }}
+              />
+            ) : (
+              <Package className="h-5 w-5 text-muted-foreground" />
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="font-medium text-sm leading-tight text-foreground">
+              {item.nombre}
+            </p>
+            <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+              {item.descripcionCorta}
+            </p>
+          </div>
         </div>
       ),
     },
