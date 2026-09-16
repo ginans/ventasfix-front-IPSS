@@ -226,21 +226,36 @@ A diferencia de un sitio web B2C de consumo masivo, esta aplicación responde a 
 ## Módulos y Vistas del Sistema
 
 ### 1. Inicio de Sesión (`/login`)
-Formulario de acceso institucional con validación en tiempo real mediante Zod, verificación de dominio `@ventasfix.cl` y retroalimentación mediante toasts.
+Formulario de acceso institucional con validación en tiempo real mediante Zod, verificación de dominio `@ventasfix.cl` y retroalimentación visual mediante Sonner toasts.
+
+![Inicio de Sesión](screenshots/01-login.png)
 
 ### 2. Dashboard General (`/dashboard`)
-Panel de control con contadores en tiempo real (Usuarios, Productos, Clientes) y dos visualizaciones gráficas:
-- **Barras de Clientes por Rubro:** Distribución según actividad comercial de las empresas.
+Panel de control con contadores en tiempo real (Usuarios, Productos, Clientes) y dos visualizaciones gráficas interactivas desarrolladas con **Recharts + Shadcn UI**:
+- **Barras de Clientes por Rubro:** Distribución según actividad comercial de las empresas registradas.
 - **Dona de Salud de Inventario:** Diagnóstico de artículos críticos, bajos, normales y altos con recuento exacto de reposición.
 
+![Dashboard General](screenshots/02-dashboard.png)
+
 ### 3. Control de Productos (`/productos`)
-Catálogo con miniaturas de fotos (`40x40px`), autocalculo de IVA (19%), badges de stock y paginación integrada. El modal de producto incluye previsualización de imagen en vivo.
+Catálogo con miniaturas de fotos (`40x40px`), autocalculo de IVA (19%), badges semánticos de stock y paginación integrada de 6 registros por página.
+
+![Control de Productos](screenshots/04-productos.png)
+
+#### Modal de Creación y Edición de Producto
+Incorpora previsualización de imagen en vivo al ingresar la URL y sincronización reactiva del precio de venta con impuesto:
+
+![Modal de Producto con IVA y Previsualización](screenshots/05-modal-producto.png)
 
 ### 4. Control de Clientes (`/clientes`)
-Mantenedor de clientes corporativos con validación de RUT Chileno (Módulo 11), giro comercial, datos de contacto y confirmación modal de eliminación.
+Mantenedor de clientes corporativos (B2B) con validación matemática de RUT Chileno (Módulo 11), giro comercial, datos de contacto y confirmación modal de eliminación.
+
+![Control de Clientes Empresa](screenshots/06-clientes.png)
 
 ### 5. Control de Usuarios (`/usuarios`)
-Gestión de usuarios del sistema con asignación de roles `ADMIN` y `VIEWER`.
+Gestión y auditoría de administradores y visualizadores del sistema con asignación estricta de roles institucionales (`ADMIN` y `VIEWER`).
+
+![Control de Usuarios](screenshots/03-usuarios.png)
 
 ---
 
