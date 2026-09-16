@@ -4,6 +4,7 @@ export interface IAuthUser {
   nombre: string;
   apellido: string;
   email: string;
+  role: string;
 }
 
 export interface ILoginRequest {

@@ -38,6 +38,7 @@ const userSchema = z.object({
     .refine((val) => !val || val.length >= 6, {
       message: 'La contraseña debe tener al menos 6 caracteres',
     }),
+  role: z.string().optional(),
 });
 
 type UserFormData = z.infer<typeof userSchema>;
@@ -71,6 +72,7 @@ export function UserFormDialog({
       apellido: '',
       email: '',
       password: '',
+      role: 'VIEWER',
     },
   });
 
@@ -82,6 +84,7 @@ export function UserFormDialog({
         apellido: userToEdit.apellido,
         email: userToEdit.email,
         password: '',
+        role: userToEdit.role || 'ADMIN',
       });
     } else {
       reset({
@@ -90,6 +93,7 @@ export function UserFormDialog({
         apellido: '',
         email: '',
         password: '',
+        role: 'VIEWER',
       });
     }
   }, [userToEdit, reset, isOpen]);
@@ -178,6 +182,25 @@ export function UserFormDialog({
               <p className="text-xs text-destructive">{errors.password.message}</p>
             )}
           </div>
+
+          {isEditing ? (
+            <div className="space-y-1.5">
+              <Label htmlFor="role">Rol del Usuario</Label>
+              <select
+                id="role"
+                {...register('role')}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="ADMIN">Administrador (Control Total)</option>
+                <option value="VIEWER">Visualizador (Solo Lectura)</option>
+              </select>
+            </div>
+          ) : (
+            <div className="p-3 bg-muted/60 rounded-md text-xs text-muted-foreground flex items-center justify-between border">
+              <span>Rol inicial por defecto:</span>
+              <span className="font-semibold text-foreground">Visualizador (Solo Lectura)</span>
+            </div>
+          )}
 
           <DialogFooter className="pt-4">
             <Button

@@ -2,15 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { useProductsStore } from '@/stores/products.store';
+import { usePermissions } from '@/hooks/use-permissions';
 import { IProduct, ICreateProduct } from '@/interfaces/product.interface';
 import { DataTable, IDataTableColumn } from '@/components/shared/data-table';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { ProductFormDialog } from '@/components/modules/products/product-form-dialog';
 import { AppBadge } from '@/components/shared/app-badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
 
 export default function ProductosPage() {
+  const { isViewer, canWrite } = usePermissions();
+
   const {
     products,
     isLoading,
@@ -125,28 +128,34 @@ export default function ProductosPage() {
     {
       key: 'acciones',
       label: 'Acciones',
-      render: (item) => (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleOpenEdit(item)}
-            className="h-8 px-2 text-xs"
-          >
-            <Pencil className="h-3.5 w-3.5 mr-1" />
-            Editar
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setProductToDelete(item)}
-            className="h-8 px-2 text-xs"
-          >
-            <Trash2 className="h-3.5 w-3.5 mr-1" />
-            Eliminar
-          </Button>
-        </div>
-      ),
+      render: (item) =>
+        isViewer ? (
+          <span className="text-xs text-muted-foreground italic flex items-center gap-1">
+            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            Solo lectura
+          </span>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleOpenEdit(item)}
+              className="h-8 px-2 text-xs"
+            >
+              <Pencil className="h-3.5 w-3.5 mr-1" />
+              Editar
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setProductToDelete(item)}
+              className="h-8 px-2 text-xs"
+            >
+              <Trash2 className="h-3.5 w-3.5 mr-1" />
+              Eliminar
+            </Button>
+          </div>
+        ),
     },
   ];
 
@@ -159,10 +168,12 @@ export default function ProductosPage() {
             Catálogo con cálculo de IVA 19% y monitoreo de niveles de stock
           </p>
         </div>
-        <Button onClick={handleOpenCreate} className="self-start sm:self-auto">
-          <Plus className="h-4 w-4 mr-2" />
-          Nuevo Producto
-        </Button>
+        {canWrite && (
+          <Button onClick={handleOpenCreate} className="self-start sm:self-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            Nuevo Producto
+          </Button>
+        )}
       </div>
 
       <DataTable<IProduct>

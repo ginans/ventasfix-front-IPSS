@@ -9,6 +9,7 @@ import {
   HelpCircle,
   ShieldCheck,
   User,
+  Eye,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -64,6 +65,12 @@ export const BADGE_REGISTRY: Record<
       variant: 'secondary',
       icon: ShieldCheck,
       className: 'bg-primary/10 text-primary border-transparent',
+    },
+    VIEWER: {
+      label: 'Visualizador',
+      variant: 'outline',
+      icon: Eye,
+      className: 'bg-slate-100 text-slate-700 border-slate-300',
     },
     VENDEDOR: {
       label: 'Vendedor',

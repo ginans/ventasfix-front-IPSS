@@ -2,16 +2,19 @@
 
 import React, { useEffect, useState } from 'react';
 import { useUsersStore } from '@/stores/users.store';
+import { usePermissions } from '@/hooks/use-permissions';
 import { IUser, ICreateUser } from '@/interfaces/user.interface';
 import { DataTable, IDataTableColumn } from '@/components/shared/data-table';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { UserFormDialog } from '@/components/modules/users/user-form-dialog';
 import { Button } from '@/components/ui/button';
 import { AppBadge } from '@/components/shared/app-badge';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
 import { formatRut } from '@/lib/rut';
 
 export default function UsuariosPage() {
+  const { isViewer, canWrite } = usePermissions();
+
   const { users, isLoading, fetchUsers, createUser, updateUser, deleteUser } =
     useUsersStore();
 
@@ -92,28 +95,34 @@ export default function UsuariosPage() {
     {
       key: 'acciones',
       label: 'Acciones',
-      render: (item) => (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleOpenEdit(item)}
-            className="h-8 px-2 text-xs"
-          >
-            <Pencil className="h-3.5 w-3.5 mr-1" />
-            Editar
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setUserToDelete(item)}
-            className="h-8 px-2 text-xs"
-          >
-            <Trash2 className="h-3.5 w-3.5 mr-1" />
-            Eliminar
-          </Button>
-        </div>
-      ),
+      render: (item) =>
+        isViewer ? (
+          <span className="text-xs text-muted-foreground italic flex items-center gap-1">
+            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+            Solo lectura
+          </span>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleOpenEdit(item)}
+              className="h-8 px-2 text-xs"
+            >
+              <Pencil className="h-3.5 w-3.5 mr-1" />
+              Editar
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setUserToDelete(item)}
+              className="h-8 px-2 text-xs"
+            >
+              <Trash2 className="h-3.5 w-3.5 mr-1" />
+              Eliminar
+            </Button>
+          </div>
+        ),
     },
   ];
 
@@ -126,10 +135,12 @@ export default function UsuariosPage() {
             Gestión y mantenedor de administradores con credenciales corporativas
           </p>
         </div>
-        <Button onClick={handleOpenCreate} className="self-start sm:self-auto">
-          <Plus className="h-4 w-4 mr-2" />
-          Nuevo Usuario
-        </Button>
+        {canWrite && (
+          <Button onClick={handleOpenCreate} className="self-start sm:self-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            Nuevo Usuario
+          </Button>
+        )}
       </div>
 
       <DataTable<IUser>
