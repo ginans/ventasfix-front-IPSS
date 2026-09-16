@@ -106,10 +106,19 @@ export default function ProductosPage() {
       key: 'stock',
       label: 'Inventario Actual',
       render: (item) => (
+        <span className="font-semibold text-sm text-foreground">
+          {item.stockActual}
+        </span>
+        
+      ),
+    },
+    {
+      key: 'stock',
+      label: 'Nivel de Inventario',
+      render: (item) => (
         <AppBadge
           category="inventory"
           status={item.stockStatus}
-          value={item.stockActual}
         />
       ),
     },
