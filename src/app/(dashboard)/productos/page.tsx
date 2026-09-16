@@ -3,12 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { useProductsStore } from '@/stores/products.store';
 import { IProduct, ICreateProduct } from '@/interfaces/product.interface';
-import { EStockStatus } from '@/enums/stock-status.enum';
 import { DataTable, IDataTableColumn } from '@/components/shared/data-table';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { ProductFormDialog } from '@/components/modules/products/product-form-dialog';
+import { AppBadge } from '@/components/shared/app-badge';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 
 export default function ProductosPage() {
@@ -63,47 +62,6 @@ export default function ProductosPage() {
     }).format(amount);
   };
 
-  const renderStockBadge = (status?: EStockStatus, actual?: number) => {
-    switch (status) {
-      case EStockStatus.CRITICAL:
-        return (
-          <div className="flex items-center gap-2">
-            <span className="font-mono">{actual}</span>
-            <Badge variant="destructive" className="font-mono">
-              Crítico
-            </Badge>
-          </div>
-        );
-      case EStockStatus.LOW:
-        return (
-          <div className="flex items-center gap-2">
-            <span className="font-mono">{actual}</span>
-            <Badge variant="warning" className="font-mono">
-              Bajo
-            </Badge>
-          </div>
-        );
-      case EStockStatus.NORMAL:
-        return (
-          <div className="flex items-center gap-2">
-            <span className="font-mono">{actual}</span>
-            <Badge variant="success" className="font-mono">
-              Normal
-            </Badge>
-          </div>
-        );
-      default:
-        return (
-          <div className="flex items-center gap-2">
-            <span className="font-mono">{actual}</span>
-            <Badge variant="secondary" className="font-mono">
-              Alto
-            </Badge>
-          </div>
-        );
-    }
-  };
-
   const columns: IDataTableColumn<IProduct>[] = [
     {
       key: 'sku',
@@ -147,8 +105,13 @@ export default function ProductosPage() {
     {
       key: 'stock',
       label: 'Inventario Actual',
-      render: (item) =>
-        renderStockBadge(item.stockStatus, item.stockActual),
+      render: (item) => (
+        <AppBadge
+          category="inventory"
+          status={item.stockStatus}
+          value={item.stockActual}
+        />
+      ),
     },
     {
       key: 'acciones',

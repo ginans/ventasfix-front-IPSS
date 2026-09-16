@@ -4,6 +4,7 @@ export interface IUser {
   nombre: string;
   apellido: string;
   email: string;
+  role?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -14,6 +15,7 @@ export interface ICreateUser {
   apellido: string;
   email: string;
   password: string;
+  role?: string;
 }
 
 export interface IUpdateUser {
@@ -22,5 +24,6 @@ export interface IUpdateUser {
   apellido?: string;
   email?: string;
   password?: string;
+  role?: string;
 }
 

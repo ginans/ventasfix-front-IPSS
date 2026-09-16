@@ -7,7 +7,8 @@ import { DataTable, IDataTableColumn } from '@/components/shared/data-table';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { UserFormDialog } from '@/components/modules/users/user-form-dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, ShieldCheck } from 'lucide-react';
+import { AppBadge } from '@/components/shared/app-badge';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { formatRut } from '@/lib/rut';
 
 export default function UsuariosPage() {
@@ -81,11 +82,11 @@ export default function UsuariosPage() {
     {
       key: 'role',
       label: 'Rol',
-      render: () => (
-        <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
-          <ShieldCheck className="h-3 w-3" />
-          Administrador
-        </span>
+      render: (item) => (
+        <AppBadge
+          category="user"
+          status={item.role || 'ADMIN'}
+        />
       ),
     },
     {
