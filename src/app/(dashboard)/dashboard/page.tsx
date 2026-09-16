@@ -29,7 +29,7 @@ export default function DashboardPage() {
           value={isLoading ? '...' : (stats?.totalUsers ?? 0)}
           description="Administradores activos con acceso al Backoffice"
           icon={Users}
-          variant="blue"
+          variant="violet"
         />
 
         <StatCard
@@ -37,7 +37,7 @@ export default function DashboardPage() {
           value={isLoading ? '...' : (stats?.totalProducts ?? 0)}
           description="Artículos en catálogo con control de inventario e IVA"
           icon={Package}
-          variant="emerald"
+          variant="violet"
         />
 
         <StatCard

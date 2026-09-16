@@ -20,7 +20,10 @@ const variantStyles = {
   emerald:
     'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400',
   violet:
-    'bg-violet-50 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400',
+    'bg-[#ede9fe] text-[#7c3aed] dark:bg-violet-950/50 dark:text-violet-400',
+  blue: 'bg-blue-50 text-blue-600',
+  emerald: 'bg-emerald-50 text-emerald-600',
+  violet: 'bg-[#ede9fe] text-[#7c3aed]',
 };
 
 export function StatCard({

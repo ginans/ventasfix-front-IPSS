@@ -67,27 +67,39 @@ export default function ProductosPage() {
     switch (status) {
       case EStockStatus.CRITICAL:
         return (
-          <Badge variant="destructive" className="font-mono">
-            {actual} (Crítico)
-          </Badge>
+          <div className="flex items-center gap-2">
+            <span className="font-mono">{actual}</span>
+            <Badge variant="destructive" className="font-mono">
+              Crítico
+            </Badge>
+          </div>
         );
       case EStockStatus.LOW:
         return (
-          <Badge variant="warning" className="font-mono">
-            {actual} (Bajo)
-          </Badge>
+          <div className="flex items-center gap-2">
+            <span className="font-mono">{actual}</span>
+            <Badge variant="warning" className="font-mono">
+              Bajo
+            </Badge>
+          </div>
         );
       case EStockStatus.NORMAL:
         return (
-          <Badge variant="success" className="font-mono">
-            {actual} (Normal)
-          </Badge>
+          <div className="flex items-center gap-2">
+            <span className="font-mono">{actual}</span>
+            <Badge variant="success" className="font-mono">
+              Normal
+            </Badge>
+          </div>
         );
       default:
         return (
-          <Badge variant="secondary" className="font-mono">
-            {actual} (Alto)
-          </Badge>
+          <div className="flex items-center gap-2">
+            <span className="font-mono">{actual}</span>
+            <Badge variant="secondary" className="font-mono">
+              Alto
+            </Badge>
+          </div>
         );
     }
   };
