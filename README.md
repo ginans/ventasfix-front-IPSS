@@ -27,6 +27,7 @@ Este repositorio contiene la **Aplicación Web Backoffice**. El backend REST API
 - [Estrategia UX/UI Desktop & Tablet-First](#estrategia-uxui-desktop--tablet-first)
 - [Módulos y Vistas del Sistema](#módulos-y-vistas-del-sistema)
 - [Cuentas de Acceso Preconfiguradas](#cuentas-de-acceso-preconfiguradas)
+- [Batería de Pruebas End-to-End (Playwright)](#batería-de-pruebas-end-to-end-playwright)
 - [Nota sobre el proceso de desarrollo](#nota-sobre-el-proceso-de-desarrollo)
 
 ---
@@ -129,6 +130,8 @@ npm start
 | `npm run build` | Compila y optimiza la aplicación para producción |
 | `npm start` | Inicia el servidor Next.js en modo producción en puerto 3001 |
 | `npm run lint` | Ejecuta el linter ESLint con reglas estrictas de TypeScript |
+| `npm run test:e2e` | Ejecuta la batería de 21 pruebas End-to-End automatizadas con Playwright |
+| `npm run screenshots` | Captura automáticamente las fotos HD de todas las vistas del sistema |
 
 ---
 
@@ -267,6 +270,23 @@ Para probar ambos niveles de acceso y comprobar el funcionamiento del RBAC:
 | :--- | :--- | :---: | :--- |
 | **ADMIN** | `admin@ventasfix.cl` | `Admin1234!` | Control Total (Crear, Editar, Eliminar) |
 | **VIEWER** | `viewer@ventasfix.cl` | `Viewer1234!` | Solo Lectura (Botones deshabilitados) |
+
+## Batería de Pruebas End-to-End (Playwright)
+
+El sistema incorpora una suite integral de **21 pruebas automatizadas E2E** ejecutadas sobre un navegador real (Microsoft Edge headless) que validan los flujos críticos del examen:
+
+```bash
+npm run test:e2e
+```
+
+### Cobertura de las Pruebas:
+1. **Perímetro de Seguridad:** Redirección forzada a `/login` al intentar acceder a rutas protegidas sin token JWT, y rechazo semántico de credenciales incorrectas.
+2. **Dashboard & Recharts:** Carga reactiva de contadores KPI y renderizado de gráficos SVG de clientes por rubro y dona de inventario con diagnósticos dinámicos de reposición.
+3. **Catálogo & Regla de Negocio de IVA (19%):** Sincronización matemática automática en tiempo real de `precioVenta = Math.round(precioNeto * 1.19)`, previsualización en vivo de URLs de imágenes y filtrado reactivo de tabla con paginación de 6 elementos.
+4. **Ciclo CRUD Completo (Create, Update & Clean-up):** Flujo completo de mutación en base de datos real: creación de un producto con SKU temporal, edición interactiva de sus atributos (con recálculo reactivo de IVA) y posterior eliminación mediante el modal de confirmación (`ConfirmDialog`), garantizando la idempotencia del test y dejando la base de datos completamente limpia y en su estado inicial.
+5. **Clientes B2B & Algoritmo Módulo 11:** Validación negativa con bloqueo de formulario ante RUTs matemáticamente erróneos (`12.345.678-9`) y validación positiva con formateo automático (`76.086.428-5`).
+6. **Usuarios & Dominio Institucional:** Restricción estricta de registro exclusivamente a correos bajo el dominio `@ventasfix.cl`.
+7. **Control de Acceso RBAC (Perfil VIEWER):** Comprobación del principio de menor privilegio: ocultamiento total de botones de creación (`Nuevo Producto`, `Nuevo Cliente`, `Nuevo Usuario`) y deshabilitación accesible (`disabled`) de los botones de edición y eliminación en las tablas de datos.
 
 ---
 
