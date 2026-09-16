@@ -10,7 +10,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export interface IDataTableColumn<T> {
@@ -27,6 +28,7 @@ interface DataTableProps<T> {
   searchFilter?: (item: T, query: string) => boolean;
   isLoading?: boolean;
   emptyMessage?: string;
+  pageSize?: number;
 }
 
 export function DataTable<T extends object>({
@@ -36,13 +38,36 @@ export function DataTable<T extends object>({
   searchFilter,
   isLoading = false,
   emptyMessage = 'No se encontraron registros.',
+  pageSize = 6,
 }: DataTableProps<T>) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredData = React.useMemo(() => {
     if (!searchQuery.trim() || !searchFilter) return data;
     return data.filter((item) => searchFilter(item, searchQuery.toLowerCase()));
   }, [data, searchQuery, searchFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
+
+  // Reset page on search or when filtered items shrink
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const paginatedData = React.useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, currentPage, pageSize]);
+
+  const startIndex = filteredData.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const endIndex = Math.min(currentPage * pageSize, filteredData.length);
 
   return (
     <div className="space-y-4">
@@ -99,7 +124,7 @@ export function DataTable<T extends object>({
                 </TableCell>
               </TableRow>
             ) : (
-              filteredData.map((item, index) => (
+              paginatedData.map((item, index) => (
                 <TableRow key={index}>
                   {columns.map((column) => (
                     <TableCell
@@ -120,8 +145,41 @@ export function DataTable<T extends object>({
           </TableBody>
         </Table>
       </div>
-      <div className="text-xs text-muted-foreground">
-        Mostrando {filteredData.length} de {data.length} registros
+
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+        <div>
+          Mostrando <span className="font-medium text-foreground">{startIndex}</span> a{' '}
+          <span className="font-medium text-foreground">{endIndex}</span> de{' '}
+          <span className="font-medium text-foreground">{filteredData.length}</span> registros
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 px-2"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-3.5 w-3.5 mr-1" />
+              Anterior
+            </Button>
+            <span className="px-2 font-medium text-foreground">
+              Página {currentPage} de {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 px-2"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente
+              <ChevronRight className="h-3.5 w-3.5 ml-1" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

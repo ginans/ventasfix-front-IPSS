@@ -8,7 +8,6 @@ import {
   Boxes,
   HelpCircle,
   ShieldCheck,
-  User,
   Eye,
   type LucideIcon,
 } from 'lucide-react';
@@ -71,23 +70,6 @@ export const BADGE_REGISTRY: Record<
       variant: 'outline',
       icon: Eye,
       className: 'bg-slate-100 text-slate-700 border-slate-300',
-    },
-    VENDEDOR: {
-      label: 'Vendedor',
-      variant: 'outline',
-      icon: User,
-      className: 'bg-blue-50 text-blue-700 border-blue-200',
-    },
-    OPERADOR: {
-      label: 'Operador',
-      variant: 'outline',
-      icon: User,
-      className: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    },
-    USER: {
-      label: 'Usuario',
-      variant: 'outline',
-      icon: User,
     },
     _default: {
       label: 'Sin rol',
