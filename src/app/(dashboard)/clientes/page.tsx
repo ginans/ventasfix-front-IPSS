@@ -8,11 +8,11 @@ import { DataTable, IDataTableColumn } from '@/components/shared/data-table';
 import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { ClientFormDialog } from '@/components/modules/clients/client-form-dialog';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, Building, Mail, Phone, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2, Building, Mail, Phone } from 'lucide-react';
 import { formatRut } from '@/lib/rut';
 
 export default function ClientesPage() {
-  const { isViewer, canWrite } = usePermissions();
+  const { canWrite } = usePermissions();
 
   const {
     clients,
@@ -111,34 +111,31 @@ export default function ClientesPage() {
     {
       key: 'acciones',
       label: 'Acciones',
-      render: (item) =>
-        isViewer ? (
-          <span className="text-xs text-muted-foreground italic flex items-center gap-1">
-            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-            Solo lectura
-          </span>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleOpenEdit(item)}
-              className="h-8 px-2 text-xs"
-            >
-              <Pencil className="h-3.5 w-3.5 mr-1" />
-              Editar
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setClientToDelete(item)}
-              className="h-8 px-2 text-xs"
-            >
-              <Trash2 className="h-3.5 w-3.5 mr-1" />
-              Eliminar
-            </Button>
-          </div>
-        ),
+      align: 'right',
+      render: (item) => (
+        <div className="flex items-center justify-end gap-1.5">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => handleOpenEdit(item)}
+            className="h-8 w-8"
+            title="Editar cliente"
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="destructive"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => setClientToDelete(item)}
+            className="h-8 w-8"
+            title="Eliminar cliente"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ),
     },
   ];
 

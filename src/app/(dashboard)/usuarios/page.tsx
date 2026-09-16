@@ -9,11 +9,11 @@ import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { UserFormDialog } from '@/components/modules/users/user-form-dialog';
 import { Button } from '@/components/ui/button';
 import { AppBadge } from '@/components/shared/app-badge';
-import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { formatRut } from '@/lib/rut';
 
 export default function UsuariosPage() {
-  const { isViewer, canWrite } = usePermissions();
+  const { canWrite } = usePermissions();
 
   const { users, isLoading, fetchUsers, createUser, updateUser, deleteUser } =
     useUsersStore();
@@ -43,11 +43,18 @@ export default function UsuariosPage() {
     apellido: string;
     email: string;
     password?: string;
+    role?: string;
   }) => {
     if (userToEdit) {
-      return updateUser(userToEdit.id, formData);
+      const updateData = { ...formData };
+      if (!updateData.password || updateData.password.trim() === '') {
+        delete updateData.password;
+      }
+      return updateUser(userToEdit.id, updateData);
     }
-    return createUser(formData as ICreateUser);
+    const createData = { ...formData };
+    delete createData.role;
+    return createUser(createData as ICreateUser);
   };
 
   const handleConfirmDelete = async () => {
@@ -85,6 +92,7 @@ export default function UsuariosPage() {
     {
       key: 'role',
       label: 'Rol',
+      align: 'center',
       render: (item) => (
         <AppBadge
           category="user"
@@ -95,34 +103,31 @@ export default function UsuariosPage() {
     {
       key: 'acciones',
       label: 'Acciones',
-      render: (item) =>
-        isViewer ? (
-          <span className="text-xs text-muted-foreground italic flex items-center gap-1">
-            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-            Solo lectura
-          </span>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleOpenEdit(item)}
-              className="h-8 px-2 text-xs"
-            >
-              <Pencil className="h-3.5 w-3.5 mr-1" />
-              Editar
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setUserToDelete(item)}
-              className="h-8 px-2 text-xs"
-            >
-              <Trash2 className="h-3.5 w-3.5 mr-1" />
-              Eliminar
-            </Button>
-          </div>
-        ),
+      align: 'right',
+      render: (item) => (
+        <div className="flex items-center justify-end gap-1.5">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => handleOpenEdit(item)}
+            className="h-8 w-8"
+            title="Editar usuario"
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="destructive"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => setUserToDelete(item)}
+            className="h-8 w-8"
+            title="Eliminar usuario"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ),
     },
   ];
 

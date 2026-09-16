@@ -23,17 +23,12 @@ export function Navbar() {
 
       <div className="flex items-center gap-4">
         {user && (
-          <div className="flex items-center gap-3 text-right">
+          <div className="flex items-center gap-3">
             <div className="hidden sm:flex flex-col items-end gap-1">
-              <div className="flex items-center gap-2">
-                <p className="text-sm font-semibold leading-none">
-                  {user.nombre} {user.apellido}
-                </p>
-                <AppBadge category="user" status={user.role || 'Desconocido'} />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {user.email}
+              <p className="text-sm font-semibold leading-none">
+                {user.nombre} {user.apellido}
               </p>
+              <AppBadge category="user" status={user.role || 'Desconocido'} />
             </div>
             <div className="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">
               <UserIcon className="h-4 w-4" />

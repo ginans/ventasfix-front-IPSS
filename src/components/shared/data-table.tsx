@@ -11,10 +11,12 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Search, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export interface IDataTableColumn<T> {
   key: string;
   label: string;
+  align?: 'left' | 'center' | 'right';
   render?: (item: T) => React.ReactNode;
 }
 
@@ -61,7 +63,14 @@ export function DataTable<T extends object>({
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
-                <TableHead key={column.key} className="font-semibold">
+                <TableHead
+                  key={column.key}
+                  className={cn(
+                    'font-semibold',
+                    column.align === 'right' && 'text-right',
+                    column.align === 'center' && 'text-center',
+                  )}
+                >
                   {column.label}
                 </TableHead>
               ))}
@@ -93,7 +102,13 @@ export function DataTable<T extends object>({
               filteredData.map((item, index) => (
                 <TableRow key={index}>
                   {columns.map((column) => (
-                    <TableCell key={column.key}>
+                    <TableCell
+                      key={column.key}
+                      className={cn(
+                        column.align === 'right' && 'text-right',
+                        column.align === 'center' && 'text-center',
+                      )}
+                    >
                       {column.render
                         ? column.render(item)
                         : String((item as Record<string, unknown>)[column.key] ?? '')}

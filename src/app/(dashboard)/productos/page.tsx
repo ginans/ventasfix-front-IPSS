@@ -9,10 +9,10 @@ import { ConfirmDialog } from '@/components/shared/confirm-dialog';
 import { ProductFormDialog } from '@/components/modules/products/product-form-dialog';
 import { AppBadge } from '@/components/shared/app-badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 
 export default function ProductosPage() {
-  const { isViewer, canWrite } = usePermissions();
+  const { canWrite } = usePermissions();
 
   const {
     products,
@@ -90,8 +90,9 @@ export default function ProductosPage() {
     {
       key: 'precioNeto',
       label: 'Neto',
+      align: 'right',
       render: (item) => (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs font-mono text-muted-foreground">
           {formatPrice(item.precioNeto)}
         </span>
       ),
@@ -99,25 +100,27 @@ export default function ProductosPage() {
     {
       key: 'precioVenta',
       label: 'Venta (IVA 19%)',
+      align: 'right',
       render: (item) => (
-        <span className="font-semibold text-sm text-foreground">
+        <span className="font-mono font-semibold text-sm text-foreground">
           {formatPrice(item.precioVenta)}
         </span>
       ),
     },
     {
-      key: 'stock',
-      label: 'Inventario Actual',
+      key: 'stockActual',
+      label: 'Stock Actual',
+      align: 'right',
       render: (item) => (
-        <span className="font-semibold text-sm text-foreground">
+        <span className="font-mono font-semibold text-sm text-foreground">
           {item.stockActual}
         </span>
-        
       ),
     },
     {
-      key: 'stock',
-      label: 'Nivel de Inventario',
+      key: 'stockStatus',
+      label: 'Nivel Stock',
+      align: 'center',
       render: (item) => (
         <AppBadge
           category="inventory"
@@ -128,34 +131,31 @@ export default function ProductosPage() {
     {
       key: 'acciones',
       label: 'Acciones',
-      render: (item) =>
-        isViewer ? (
-          <span className="text-xs text-muted-foreground italic flex items-center gap-1">
-            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-            Solo lectura
-          </span>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleOpenEdit(item)}
-              className="h-8 px-2 text-xs"
-            >
-              <Pencil className="h-3.5 w-3.5 mr-1" />
-              Editar
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setProductToDelete(item)}
-              className="h-8 px-2 text-xs"
-            >
-              <Trash2 className="h-3.5 w-3.5 mr-1" />
-              Eliminar
-            </Button>
-          </div>
-        ),
+      align: 'right',
+      render: (item) => (
+        <div className="flex items-center justify-end gap-1.5">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => handleOpenEdit(item)}
+            className="h-8 w-8"
+            title="Editar producto"
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="destructive"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => setProductToDelete(item)}
+            className="h-8 w-8"
+            title="Eliminar producto"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ),
     },
   ];
 

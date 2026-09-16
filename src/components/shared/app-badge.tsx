@@ -133,6 +133,11 @@ export function AppBadge({
   const Icon = config.icon;
   const badgeVariant = color || config.variant;
 
+  const categoryWidthClass =
+    category === 'inventory'
+      ? 'w-[92px] justify-center text-center'
+      : 'w-[124px] justify-center text-center';
+
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
       {value !== undefined && value !== null && (
@@ -140,7 +145,7 @@ export function AppBadge({
       )}
       <Badge
         variant={badgeVariant}
-        className={`font-mono text-xs flex items-center gap-1 ${config.className || ''}`}
+        className={`font-mono text-xs flex items-center gap-1.5 ${categoryWidthClass} ${config.className || ''}`}
       >
         {showIcon && Icon && <Icon className="h-3 w-3 shrink-0" />}
         <span>{config.label}</span>
