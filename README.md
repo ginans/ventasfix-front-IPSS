@@ -292,6 +292,6 @@ npm run test:e2e
 
 ## Nota sobre el proceso de desarrollo
 
-Este proyecto fue desarrollado con el apoyo de herramientas avanzadas de inteligencia artificial (el agente de programación `Antigravity` / asistente técnico `Gem` de Google DeepMind) para optimizar tareas de maquetación, refactorización de componentes, tipado estricto en TypeScript y elaboración de documentación.
+Este proyecto fue desarrollado con el apoyo de herramientas avanzadas de inteligencia artificial (el agente de programación `Antigravity` / modelo `Gemini 3.8 Flash` de Google DeepMind) para optimizar tareas de maquetación, refactorización de componentes, tipado estricto en TypeScript y elaboración de documentación.
 
 El uso de estas herramientas se fundamenta en un modelo de **pair programming colaborativo**, donde la **arquitectura general de la aplicación web, el diseño de la experiencia de usuario (UX/UI), la selección del stack tecnológico, la estructuración del estado global y la dirección del proyecto fueron definidas, evaluadas y supervisadas en todo momento por la desarrolladora Gina Norambuena Sánchez**, quien actuó como **arquitecta principal de frontend**, aprobando cada decisión técnica antes de su incorporación al código final.
