@@ -1,0 +1,228 @@
+/* eslint-disable @next/next/no-img-element */
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useProductsStore } from '@/stores/products.store';
+import { usePermissions } from '@/hooks/use-permissions';
+import { IProduct, ICreateProduct } from '@/interfaces/product.interface';
+import { DataTable, IDataTableColumn } from '@/components/shared/data-table';
+import { ConfirmDialog } from '@/components/shared/confirm-dialog';
+import { ProductFormDialog } from '@/components/modules/products/product-form-dialog';
+import { AppBadge } from '@/components/shared/app-badge';
+import { Button } from '@/components/ui/button';
+import { Plus, Pencil, Trash2, Package } from 'lucide-react';
+
+export default function ProductosPage() {
+  const { canWrite } = usePermissions();
+
+  const {
+    products,
+    isLoading,
+    fetchProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+  } = useProductsStore();
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<IProduct | null>(null);
+  const [productToDelete, setProductToDelete] = useState<IProduct | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const handleOpenCreate = () => {
+    setProductToEdit(null);
+    setIsFormOpen(true);
+  };
+
+  const handleOpenEdit = (product: IProduct) => {
+    setProductToEdit(product);
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmit = async (formData: ICreateProduct) => {
+    if (productToEdit) {
+      return updateProduct(productToEdit.id, formData);
+    }
+    return createProduct(formData);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+    setIsDeleting(true);
+    await deleteProduct(productToDelete.id);
+    setIsDeleting(false);
+    setProductToDelete(null);
+  };
+
+  const formatPrice = (amount: number) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const columns: IDataTableColumn<IProduct>[] = [
+    {
+      key: 'sku',
+      label: 'SKU',
+      render: (item) => (
+        <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-muted">
+          {item.sku}
+        </span>
+      ),
+    },
+    {
+      key: 'nombre',
+      label: 'Producto',
+      render: (item) => (
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 shrink-0 rounded-md border bg-muted/60 overflow-hidden flex items-center justify-center">
+            {item.imagen ? (
+              <img
+                src={item.imagen}
+                alt={item.nombre}
+                className="h-full w-full object-cover"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none';
+                }}
+              />
+            ) : (
+              <Package className="h-5 w-5 text-muted-foreground" />
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="font-medium text-sm leading-tight text-foreground">
+              {item.nombre}
+            </p>
+            <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+              {item.descripcionCorta}
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'precioNeto',
+      label: 'Neto',
+      align: 'right',
+      render: (item) => (
+        <span className="text-xs font-mono text-muted-foreground">
+          {formatPrice(item.precioNeto)}
+        </span>
+      ),
+    },
+    {
+      key: 'precioVenta',
+      label: 'Venta (IVA 19%)',
+      align: 'right',
+      render: (item) => (
+        <span className="font-mono font-semibold text-sm text-foreground">
+          {formatPrice(item.precioVenta)}
+        </span>
+      ),
+    },
+    {
+      key: 'stockActual',
+      label: 'Stock Actual',
+      align: 'right',
+      render: (item) => (
+        <span className="font-mono font-semibold text-sm text-foreground">
+          {item.stockActual}
+        </span>
+      ),
+    },
+    {
+      key: 'stockStatus',
+      label: 'Nivel Stock',
+      align: 'center',
+      render: (item) => (
+        <AppBadge
+          category="inventory"
+          status={item.stockStatus}
+        />
+      ),
+    },
+    {
+      key: 'acciones',
+      label: 'Acciones',
+      align: 'right',
+      render: (item) => (
+        <div className="flex items-center justify-end gap-1.5">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => handleOpenEdit(item)}
+            className="h-8 w-8"
+            title="Editar producto"
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="destructive"
+            size="icon"
+            disabled={!canWrite}
+            onClick={() => setProductToDelete(item)}
+            className="h-8 w-8"
+            title="Eliminar producto"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Control de Productos</h2>
+          <p className="text-sm text-muted-foreground">
+            Catálogo con cálculo de IVA 19% y monitoreo de niveles de stock
+          </p>
+        </div>
+        {canWrite && (
+          <Button onClick={handleOpenCreate} className="self-start sm:self-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            Nuevo Producto
+          </Button>
+        )}
+      </div>
+
+      <DataTable<IProduct>
+        data={products}
+        columns={columns}
+        isLoading={isLoading}
+        searchPlaceholder="Buscar por SKU, nombre o descripción..."
+        searchFilter={(item, query) =>
+          item.sku.toLowerCase().includes(query) ||
+          item.nombre.toLowerCase().includes(query) ||
+          item.descripcionCorta.toLowerCase().includes(query)
+        }
+      />
+
+      <ProductFormDialog
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={handleFormSubmit}
+        productToEdit={productToEdit}
+      />
+
+      <ConfirmDialog
+        isOpen={Boolean(productToDelete)}
+        onClose={() => setProductToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Eliminar Producto"
+        description={`¿Está seguro de que desea eliminar el producto "${productToDelete?.nombre}" (${productToDelete?.sku})? Esta acción no se puede deshacer.`}
+        isLoading={isDeleting}
+      />
+    </div>
+  );
+}
+
